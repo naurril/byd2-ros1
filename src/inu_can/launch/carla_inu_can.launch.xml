@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<launch>
+  <arg name="can_if" default="can1"/>
+  <arg name="debug" default="true"/>
+
+  <arg name="output_topic_imu_name" default="/ego_vehicle/imu"/>
+  <arg name="output_topic_gnss_name" default="/ego_vehicle/gnss"/>
+  
+  <node pkg="inu_can" type="inu_can_node" name="inu_can" output="screen">
+    <remap from="output/imu" to="$(arg output_topic_imu_name)"/>
+    <remap from="output/gnss" to="$(arg output_topic_gnss_name)"/>
+    <param name="can_if" value="$(arg can_if)"/>
+    <param name="debug" value="$(arg debug)"/>
+  </node>
+</launch>
