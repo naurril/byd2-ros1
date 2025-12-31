@@ -1,0 +1,20 @@
+<launch>  
+  <node pkg="miivii_gmsl_camera" type="miivii_gmsl_camera_node" name="gmsl_camera" output="screen">  
+    <param name="sync_freq" value="30"/>
+    <param name="video0_active" value="false"/>
+    <param name="video1_active" value="false"/>
+    <param name="video2_active" value="false"/>
+    <param name="video3_active" value="false"/>
+    <param name="video4_active" value="false"/>
+    <param name="video5_active" value="true"/>
+    <param name="video5_camera_res" value="3840x2160"/>
+     
+    <!-- <param name="video5_output_res" value="3840x2160"/> -->
+
+    <param name="video6_active" value="false"/>
+
+    <param name="video6_camera_res" value="3840x2160"/>  
+    <!-- <param name="video6_output_res" value="3840x2160"/> -->
+  </node>
+  
+</launch>

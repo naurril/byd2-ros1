@@ -114,6 +114,7 @@ public:
   {
     pnh.param<std::string>("can_if", can_if, "can0");
     pnh.param<bool>("debug", debug, false);
+    pnh.param<std::string>("imu_frame_id", imu_frame_id, "imu");
 
     gnss_publisher_ = nh.advertise<sensor_msgs::NavSatFix>("output/gnss", 10);
     imu_publisher_ = nh.advertise<sensor_msgs::Imu>("output/imu", 10);
@@ -160,6 +161,8 @@ public:
     if (imu_buffer.is_valid()) {
         
         //frame id, timestamp
+        imu_buffer.msg.header.stamp = ros::Time::now();
+        imu_buffer.msg.header.frame_id = imu_frame_id;
 
         imu_publisher_.publish(imu_buffer.msg);
 
@@ -242,6 +245,12 @@ public:
 
         imu_check_and_send();
       }
+      else if (can_id == INU_HEADING_PITCH_ROLL_SIGMA_FRAME_ID){
+
+      }
+      else if (can_id == INU_LONGITUDE_FRAME_ID){
+
+      }
       else
       {
         ROS_ERROR("Unknown CAN ID: %d\n", frame.can_id);
@@ -258,6 +267,7 @@ private:
   ros::Publisher imu_publisher_;
 
   std::string can_if;
+  std::string imu_frame_id;
   bool debug;
 
 

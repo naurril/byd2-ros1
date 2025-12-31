@@ -85,7 +85,7 @@ namespace miivii_gmsl
     pnh_.getParam("sync_freq", this->sync_camera_freq);
     pnh_.getParam("async_freq", this->async_camera_freq);
     
-    int sync_trigger_temp = 0;
+    int sync_trigger_temp = 0xFF;
     int async_trigger_temp = 0;
     pnh_.getParam("sync_trigger", sync_trigger_temp);
     pnh_.getParam("async_trigger", async_trigger_temp);
@@ -170,7 +170,7 @@ namespace miivii_gmsl
     {
       std::string dev_node = "video" + std::to_string(i);
       bool active = false;
-      pnh_.param<bool>(dev_node + ".active", active, false);
+      pnh_.param<bool>(dev_node + "_active", active, false);
       if (active)
       {
         image_publisher_[active_camera_num] = nh_.advertise<sensor_msgs::Image>("miivii_gmsl/image" + std::to_string(i), 10);
@@ -178,16 +178,16 @@ namespace miivii_gmsl
         camera_info_publisher_[active_camera_num] = nh_.advertise<sensor_msgs::CameraInfo>(camera_info_topic, 10);
         
         std::string node_name;
-        pnh_.param<std::string>(dev_node + ".node_name", node_name, "/dev/" + dev_node);
+        pnh_.param<std::string>(dev_node + "_node_name", node_name, "/dev/" + dev_node);
         ctx[active_camera_num].dev_node = node_name;
         
-        pnh_.param<std::string>(dev_node + ".camera_fmt", ctx[active_camera_num].camera_fmt_str, DEFAULT_CAMERA_FORMAT);
-        pnh_.param<std::string>(dev_node + ".output_fmt", ctx[active_camera_num].output_fmt_str, DEFAULT_OUTPUT_FORMAT);
+        pnh_.param<std::string>(dev_node + "_camera_fmt", ctx[active_camera_num].camera_fmt_str, DEFAULT_CAMERA_FORMAT);
+        pnh_.param<std::string>(dev_node + "_output_fmt", ctx[active_camera_num].output_fmt_str, DEFAULT_OUTPUT_FORMAT);
         
         std::string camera_resolution;
         std::string output_resolution;
-        pnh_.param<std::string>(dev_node + ".camera_res", camera_resolution, DEFAULR_CAMERA_RESOLUTION);
-        pnh_.param<std::string>(dev_node + ".output_res", output_resolution, DEFAULR_OUTPUT_RESOLUTION);
+        pnh_.param<std::string>(dev_node + "_camera_res", camera_resolution, DEFAULR_CAMERA_RESOLUTION);
+        pnh_.param<std::string>(dev_node + "_output_res", output_resolution, DEFAULR_OUTPUT_RESOLUTION);
         
         uint cam_w, cam_h, out_w, out_h;
         SpiltResolution(camera_resolution, &(cam_w), &(cam_h));
@@ -198,7 +198,7 @@ namespace miivii_gmsl
         ctx[active_camera_num].out_h = out_h;
 
         std::string params_file_name;
-        pnh_.param<std::string>(dev_node + ".params_file", params_file_name, "");
+        pnh_.param<std::string>(dev_node + "_params_file", params_file_name, "");
 
         ROS_INFO("===============================%s=====================", dev_node.c_str());
         ROS_INFO("Camera Format(camera_fmt) is : %s", ctx[active_camera_num].camera_fmt_str.c_str());
@@ -236,9 +236,13 @@ namespace miivii_gmsl
 
     if (this->active_camera_num == 0)
     {
-      pnh_.setParam("video0.active", true);
+      pnh_.setParam("video0_active", true);
       CreateCtx();
     }
+
+    std::cout<<"cam activate: "<<this->active_camera_num << std::endl;
+    std::cout<<"sync_camera_bit_draw: " << int(stCameraCfgSend.sync_camera_bit_draw) << std::endl;
+    std::cout<<"sync_camera_num: " << int(stCameraCfgSend.sync_camera_num) << std::endl;
 
     mvcam = new miivii::MvGmslCamera(ctx, this->active_camera_num, stCameraCfgSend);
 
@@ -265,7 +269,7 @@ namespace miivii_gmsl
     uint64_t timestamp;
     uint8_t camera_no = ctx[this->active_camera_num - 1].dev_node[10] - 0x30;
 
-    bool res = this->mvcam->GetImagePtr(outbuf.data(), timestamp, camera_no);
+    bool res = this->mvcam->GetImagePtr(outbuf.data(), timestamp, camera_no, this->g_camera_dev);
 
     if (!res)
     {

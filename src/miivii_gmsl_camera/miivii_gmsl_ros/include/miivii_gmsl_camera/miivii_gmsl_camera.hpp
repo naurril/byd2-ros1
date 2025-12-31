@@ -26,10 +26,10 @@ using std::string;
 #define DEFAULT_VIDEO "/dev/video0"
 
 #define DEFAULT_CAMERA_FORMAT "UYVY"
-#define DEFAULR_CAMERA_RESOLUTION "1280x720"
+#define DEFAULR_CAMERA_RESOLUTION "1920x1080"
 
 #define DEFAULT_OUTPUT_FORMAT "BGRA32"
-#define DEFAULR_OUTPUT_RESOLUTION "640x360"
+#define DEFAULR_OUTPUT_RESOLUTION "1920x1080"
 
 namespace miivii_gmsl
 {
@@ -51,7 +51,7 @@ namespace miivii_gmsl
 
         double publish_rate;
         int camera_num = 8;
-        int active_camera_num;
+        int active_camera_num = 0;
         int sync_camera_num;
         int async_camera_num;
         int sync_camera_freq;
